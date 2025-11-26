@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  scanner:
+    build: .
+    image: cloudsecops-scanner:latest
+    container_name: cloudsecops-scanner
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/creds/gcp-key.json
+      - AWS_PROFILE=default
+      - DATABASE_URL=postgresql://postgres:password@db:5432/cloudsecops
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+    volumes:
+      - ./creds:/creds:ro
+      - ./reports:/app/reports
+      - ./config:/app/config:ro
+    depends_on:
+      - db
+    networks:
+      - cloudsecops-net
+
+  db:
+    image: postgres:15-alpine
+    container_name: cloudsecops-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=cloudsecops
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cloudsecops-net
+    ports:
+      - "5432:5432"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cloudsecops-prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - cloudsecops-net
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: cloudsecops-grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - cloudsecops-net
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+volumes:
+  postgres_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  cloudsecops-net:
+    driver: bridge
