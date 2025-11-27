@@ -99,12 +99,12 @@ class CloudSecOpsScanner:
         logger.info(f"Starting security scan for {self.config.provider}")
 
         try:
-            # Initialize scanners
+            # Initialize the different scanners we need
             iam_scanner = IAMScanner(self.connector)
             network_scanner = NetworkScanner(self.connector)
             storage_scanner = StorageScanner(self.connector)
 
-            # Run scans in parallel
+            # Launch all scans at the same time using asyncio for better performance
             scan_tasks = [
                 self._run_iam_scan(iam_scanner),
                 self._run_network_scan(network_scanner),
@@ -113,12 +113,12 @@ class CloudSecOpsScanner:
 
             findings_list = await asyncio.gather(*scan_tasks)
 
-            # Aggregate findings
+            # Collect all the findings from different scanners
             for findings in findings_list:
                 for finding in findings:
                     self.results.add_finding(finding)
 
-            # Analyze risks
+            # Now analyze and score the risks
             risk_analyzer = RiskAnalyzer()
             self.results.findings = risk_analyzer.analyze(self.results.findings)
 
@@ -239,7 +239,7 @@ async def main():
 
         print(f"Report saved to: {output_file}")
 
-        # Exit code based on findings
+        # Return different exit codes depending on severity - useful for CI/CD pipelines
         if summary['critical'] > 0:
             exit(2)
         elif summary['high'] > 0:
