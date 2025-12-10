@@ -216,10 +216,7 @@ MIT License - See [LICENSE](LICENSE) for details
 
 ## Author
 
-**Bilal Mostefi**
-Cybersecurity Engineering Student at EPITA
-Email: bilal.mostefi@epita.fr
-Portfolio: [portfolio-mostefi-bilal.org](https://www.portfolio-mostefi-bilal.org)
+**5Otien**
 
 ## Acknowledgments
 
