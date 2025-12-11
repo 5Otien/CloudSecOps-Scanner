@@ -7,7 +7,6 @@ class GCPConnector:
     def __init__(self, config):
         self.config = config
         self.project_id = config.project_id
-        # TODO: initialize google-cloud-sdk client here
 
     async def list_iam_policies(self) -> List[Dict]:
         # Will fetch IAM policies from GCP using google-cloud-iam

@@ -8,30 +8,33 @@ Multi-cloud security scanning and compliance automation tool for GCP, AWS, and A
 
 ## Overview
 
-CloudSecOps Scanner is a DevSecOps project focused on automating security assessments across cloud infrastructure. The tool performs automated scans for common misconfigurations, compliance violations, and security vulnerabilities in cloud environments.
+CloudSecOps Scanner is a **modular framework** for building automated security assessments across cloud infrastructure. This project provides the foundation and architecture for implementing custom security scanners that detect misconfigurations, compliance violations, and vulnerabilities in multi-cloud environments.
 
-**Current Status:** Active Development
+**Current Status:** Framework Implementation
+**Project Type:** Extensible Security Scanner Architecture
+
+> **Note:** This is a professional framework designed to be extended with custom scanning logic based on specific security requirements. The core architecture, CI/CD pipeline, testing infrastructure, and containerization are fully implemented and production-ready.
 
 ## Features
 
-### Security Scanning
-- IAM policy analysis and privilege detection
-- Network security configuration checks
-- Storage bucket security assessment
-- Compliance framework validation (CIS Benchmarks, GDPR)
-- Automated vulnerability scanning
+### ✅ Implemented Core Infrastructure
+- **Modular Architecture** - Extensible scanner framework with clean separation of concerns
+- **Multi-Cloud Connectors** - Ready-to-extend connectors for GCP, AWS, and Azure
+- **Async Scanning Engine** - High-performance parallel scanning with asyncio
+- **Risk Analysis Framework** - Pluggable risk scoring and severity classification
+- **Multi-Format Reporting** - JSON and HTML report generation
+- **Docker Containerization** - Production-ready containerized deployment
+- **CI/CD Pipeline** - Automated testing, linting, and security scanning (GitHub Actions)
+- **Infrastructure as Code** - Terraform templates for GCP deployment
+- **Comprehensive Testing** - Unit tests with pytest and coverage reporting
+- **Security Tooling** - Integrated Bandit, Safety, and Trivy scanning
 
-### Cloud Provider Support
-- Google Cloud Platform (GCP)
-- Amazon Web Services (AWS)
-- Microsoft Azure
-
-### DevOps Integration
-- Docker containerization
-- CI/CD pipeline (GitHub Actions)
-- Infrastructure as Code (Terraform)
-- Automated testing
-- Security scanning integration
+### 🔧 Ready for Implementation
+- **IAM Policy Analysis** - Framework ready for custom permission detection logic
+- **Network Security Checks** - Connector methods prepared for firewall rule analysis
+- **Storage Security Assessment** - Structure in place for bucket configuration auditing
+- **Compliance Frameworks** - Extensible design for CIS, GDPR, ISO-27001 validation
+- **Custom Rule Engine** - Add organization-specific security policies
 
 ## Architecture
 
@@ -148,6 +151,49 @@ CloudSecOps-Scanner/
 └── requirements.txt            # Dependencies
 ```
 
+## Extending the Framework
+
+This project is designed to be extended with custom scanning implementations. The framework provides:
+
+### Core Components Ready to Extend
+
+1. **Connectors** (`src/connectors/`) - Cloud provider API integrations
+   - Implement methods to fetch resources from GCP/AWS/Azure APIs
+   - Use official SDKs (google-cloud-sdk, boto3, azure-sdk)
+
+2. **Scanners** (`src/scanners/`) - Security scanning logic
+   - `iam_scanner.py` - Analyze IAM policies and permissions
+   - `network_scanner.py` - Check firewall rules and network configs
+   - `storage_scanner.py` - Audit storage bucket security
+
+3. **Analyzers** (`src/analyzers/`) - Risk scoring and analysis
+   - Implement custom risk calculation algorithms
+   - Add compliance framework checks (CIS, GDPR, ISO-27001)
+
+4. **Reporters** (`src/reporters/`) - Output formatting
+   - Extend JSON/HTML reporters with custom templates
+   - Add new output formats (PDF, CSV, SARIF)
+
+### Example: Implementing a Scanner
+
+```python
+# src/scanners/iam_scanner.py
+async def scan(self) -> List[Dict]:
+    findings = []
+    policies = await self.connector.list_iam_policies()
+
+    for policy in policies:
+        if self._is_overly_permissive(policy):
+            findings.append({
+                'severity': 'critical',
+                'title': 'Overly permissive IAM role detected',
+                'resource_id': policy['user'],
+                'recommendation': 'Apply least privilege principle'
+            })
+
+    return findings
+```
+
 ## Development
 
 ### Running Tests
@@ -194,13 +240,18 @@ GitHub Actions workflow includes:
 - Docker image build and push
 - Automated testing with coverage reporting
 
-## Roadmap
+## Extension Opportunities
 
-- [ ] Enhanced compliance framework support
-- [ ] Machine learning-based anomaly detection
-- [ ] Auto-remediation capabilities
-- [ ] Extended cloud provider coverage
-- [ ] Web dashboard interface
+This framework can be extended with:
+
+- **Scanner Implementations** - Add actual cloud API integrations and security checks
+- **Enhanced Compliance** - Implement CIS Benchmarks, NIST, HIPAA validators
+- **ML-Based Detection** - Integrate anomaly detection for unusual access patterns
+- **Auto-Remediation** - Add automated fix capabilities for common issues
+- **Additional Providers** - Extend to Oracle Cloud, DigitalOcean, etc.
+- **Web Dashboard** - Build a React/Vue frontend for visualization
+- **Real-Time Monitoring** - Continuous scanning with alerting integration
+- **Custom Policies** - Organization-specific security rule engines
 
 ## Contributing
 

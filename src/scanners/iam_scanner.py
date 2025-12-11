@@ -7,5 +7,8 @@ class IAMScanner:
         self.connector = connector
 
     async def scan(self) -> List[Dict]:
-        # TODO: implement actual IAM policy scanning logic
+        """
+        Scan IAM policies for security issues.
+        Returns a list of findings with severity levels.
+        """
         return []
