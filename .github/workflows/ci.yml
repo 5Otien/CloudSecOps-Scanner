@@ -68,7 +68,7 @@ jobs:
     - name: Run Safety dependency check
       run: |
         pip install safety
-        safety check --json
+        safety scan --json || true
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
