@@ -17,7 +17,6 @@ azure-mgmt-storage>=21.0.0
 # Security scanning
 bandit>=1.7.5
 safety>=2.3.5
-trivy-python>=0.1.0
 
 # Database
 sqlalchemy>=2.0.0
