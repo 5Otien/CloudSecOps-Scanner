@@ -7,5 +7,4 @@ class NetworkScanner:
         self.connector = connector
 
     async def scan(self) -> List[Dict]:
-        # Will scan VPC, firewalls, security groups etc
         return []

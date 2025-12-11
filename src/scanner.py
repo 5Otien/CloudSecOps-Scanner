@@ -99,12 +99,10 @@ class CloudSecOpsScanner:
         logger.info(f"Starting security scan for {self.config.provider}")
 
         try:
-            # Initialize the different scanners we need
             iam_scanner = IAMScanner(self.connector)
             network_scanner = NetworkScanner(self.connector)
             storage_scanner = StorageScanner(self.connector)
 
-            # Launch all scans at the same time using asyncio for better performance
             scan_tasks = [
                 self._run_iam_scan(iam_scanner),
                 self._run_network_scan(network_scanner),
@@ -113,12 +111,10 @@ class CloudSecOpsScanner:
 
             findings_list = await asyncio.gather(*scan_tasks)
 
-            # Collect all the findings from different scanners
             for findings in findings_list:
                 for finding in findings:
                     self.results.add_finding(finding)
 
-            # Now analyze and score the risks
             risk_analyzer = RiskAnalyzer()
             self.results.findings = risk_analyzer.analyze(self.results.findings)
 
@@ -178,7 +174,6 @@ async def main():
 
     subparsers = parser.add_subparsers(dest='command', help='Commands')
 
-    # Scan command
     scan_parser = subparsers.add_parser('scan', help='Run security scan')
     scan_parser.add_argument('--provider', required=True,
                             choices=['gcp', 'aws', 'azure'],
@@ -202,7 +197,6 @@ async def main():
     args = parser.parse_args()
 
     if args.command == 'scan':
-        # Load configuration
         config = Config(
             provider=args.provider,
             project_id=args.project_id,
@@ -212,13 +206,10 @@ async def main():
             severity=args.severity.split(',')
         )
 
-        # Initialize scanner
         scanner = CloudSecOpsScanner(config)
 
-        # Run scan
         results = await scanner.scan()
 
-        # Print summary
         summary = results.get_summary()
         print("\n" + "="*60)
         print("SCAN SUMMARY")
@@ -232,14 +223,12 @@ async def main():
         print(f"Resources Scanned: {summary['resources_scanned']}")
         print("="*60 + "\n")
 
-        # Export results
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         output_file = f"{args.report_path}/scan_{args.provider}_{timestamp}.{args.output}"
         scanner.export_results(format=args.output, output_path=output_file)
 
         print(f"Report saved to: {output_file}")
 
-        # Return different exit codes depending on severity - useful for CI/CD pipelines
         if summary['critical'] > 0:
             exit(2)
         elif summary['high'] > 0:

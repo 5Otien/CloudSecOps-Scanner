@@ -5,4 +5,3 @@ class AzureConnector:
 
     def __init__(self, config):
         self.config = config
-        # Setup Azure SDK connection

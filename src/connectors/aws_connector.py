@@ -5,4 +5,3 @@ class AWSConnector:
 
     def __init__(self, config):
         self.config = config
-        # Will use boto3 to connect to AWS services

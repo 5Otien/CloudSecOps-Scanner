@@ -7,5 +7,4 @@ class StorageScanner:
         self.connector = connector
 
     async def scan(self) -> List[Dict]:
-        # Check bucket ACLs, encryption, public access etc.
         return []

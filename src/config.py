@@ -19,16 +19,13 @@ class Config:
     compliance: Optional[str] = None
     severity: List[str] = None
 
-    # Credentials
     gcp_credentials_path: str = os.getenv('GOOGLE_APPLICATION_CREDENTIALS', '')
     aws_access_key: str = os.getenv('AWS_ACCESS_KEY_ID', '')
     aws_secret_key: str = os.getenv('AWS_SECRET_ACCESS_KEY', '')
     azure_tenant_id: str = os.getenv('AZURE_TENANT_ID', '')
 
-    # Database
     database_url: str = os.getenv('DATABASE_URL', 'sqlite:///cloudsecops.db')
 
-    # Alerting
     slack_webhook_url: str = os.getenv('SLACK_WEBHOOK_URL', '')
     smtp_server: str = os.getenv('SMTP_SERVER', '')
     smtp_username: str = os.getenv('SMTP_USERNAME', '')
@@ -46,5 +43,4 @@ def load_config(config_path: str = 'config/config.yaml') -> Config:
             config_data = yaml.safe_load(f)
             return Config(**config_data)
     except FileNotFoundError:
-        # Return default config if file not found
         return Config(provider='gcp')
