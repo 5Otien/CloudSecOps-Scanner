@@ -14,7 +14,6 @@ WORKDIR /app
 
 COPY --from=builder /root/.local /root/.local
 COPY src/ ./src/
-COPY config/ ./config/
 
 RUN chmod +x src/scanner.py
 RUN useradd -m -u 1000 scanner && chown -R scanner:scanner /app
